@@ -14,7 +14,7 @@
     "version": "1.0.84",
     "author": {
         "name": "Oguzhan TORTOP",
-        "url": "https://github.com/oguzhantortop/cooltable/AUTHORS.txt"
+        "url": "https://github.com/oguzhantortop/jquery-cooltable/AUTHORS.txt"
     },
     "maintainers": [
         {
@@ -29,9 +29,9 @@
             "url": "http://www.gnu.org/licenses/gpl-2.0.html"
         }
     ],
-    "bugs": "https://github.com/oguzhantortop/cooltable/issues",
-    "homepage": "https://github.com/oguzhantortop/cooltable",
-    "docs": "https://github.com/oguzhantortop/cooltable/issues",
+    "bugs": "https://github.com/oguzhantortop/jquery-cooltable/issues",
+    "homepage": "https://github.com/oguzhantortop/jquery-cooltable/wiki",
+    "docs": "https://github.com/oguzhantortop/jquery-cooltable/wiki",
     "download": "",
     "dependencies": {
         "jquery": ">=1.6.2"
