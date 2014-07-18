@@ -1,0 +1,182 @@
+ <html>
+ <head>
+    
+   
+    
+<script src="./jquery.cooltable.js"></script>
+    <script src="./jquery-1.6.2.min.js"></script>
+	
+    
+    <style>
+		table.crmgrid { border-collapse: collapse; border: 1px solid #6287a5; width: 540px;}
+		table.crmgrid td, table.crmgrid th { padding: 2px; border: 1px solid #6287a5; font-size: 9px;}
+		table.crmgrid th { background: #E5E5E5;  font-size: 10px; -webkit-touch-callout: none; -webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;outline-style:none;}
+		tr.crmgridPaginator td{background: #ffffff; text-align: center; font-size: 10px; -webkit-touch-callout: none; -webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;outline-style:none;}
+		tr.crmgridrow01 { background:#fcfcfc; }
+		tr.crmgridrow02 { background:#d8e6f0; }
+	</style>
+    
+ </head>
+<body>
+    <div id="rcGrid" ></div>
+	<div id="rcPaginator"></div>
+    
+    
+<script>
+
+     var MyUtil ={
+
+	sortListByField:function (ranarray, sortfield) {
+	    var x, y, holder;
+	    // The Bubble Sort method. 
+	    for (x = 0; x < ranarray.length; x++) {
+	        var swapOccured = false;
+	        for (y = 0; y < (ranarray.length - 1); y++) {
+	            if (ranarray[y][sortfield] > ranarray[y + 1][sortfield]) {
+	                holder = ranarray[y + 1];
+	                ranarray[y + 1] = ranarray[y];
+	                ranarray[y] = holder;
+	                swapOccured = true;
+	            }
+	        }
+	        if (!swapOccured) break;
+	    }
+	},
+
+
+	formatNumber:function(nStr){
+		if( nStr===undefined || nStr==null )return '';
+		nStr += '';
+		x = nStr.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? ',' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + '.' + '$2');
+		}
+		return x1 + x2.substring(0,3); //virgulden sonra sadece 2 karakter goster.
+	},
+	removeNull:function(v){
+		return (v === undefined || v == null) ? "" : v;
+	},
+	log: function(){	
+		if(typeof(top.console)!=='undefined'){
+		    try{top.console.log(JSON.stringify(arguments)); }
+		    catch(e){}
+		}
+	}
+
+}
+	 
+var tablo ;	
+	 
+$(document).ready(function () {
+
+	var gridName = "bchGrid";
+	var imageFunction = function (rowdata,celldata){ 
+		return $('<span>').
+			append($('<img></img>')
+					.attr('src','/Advisor/xAdvisorWeb/images/kredi_kullanimi.png')
+					.attr('height','16')
+					.attr('title','Credit Usage')
+					.css({'cursor':'pointer','padding-left':'1px','padding-right':'1px'})
+					.click(function(){alert('do what you want here!');}))
+			.append($('<img></img>')
+					.attr('src','/Advisor/xAdvisorWeb/images/borc_odeme.png')
+					.attr('height','16')
+					.attr('title','Loan Payment')
+					.css({'cursor':'pointer','padding-left':'1px','padding-right':'1px'})
+					.click(function(){alert('do what you want here!');}))
+			.append($('<img></img>')
+					.attr('src','/Advisor/xAdvisorWeb/images/icon-kapama.png')
+					.attr('height','16')
+					.attr('title','Close Credit')
+					.css({'cursor':'pointer','padding-left':'1px','padding-right':'1px'})
+					.click(function(){alert('do what you want here!');}));
+	}
+	
+	var dateSort1 = function (a,b) {
+		var pad ='00';
+		var arr = a.values['openingDate'].split("/");
+		var aNum = Number(arr[2]+(pad+arr[1]).slice(-pad.length)+(pad+arr[0]).slice(-pad.length));
+		arr = b.values['openingDate'].split("/");
+		var bNum = Number(arr[2]+(pad+arr[1]).slice(-pad.length)+(pad+arr[0]).slice(-pad.length));
+			if(aNum>bNum)
+				return -1;
+			else if(aNum<bNum)
+				return 1;
+			else
+				return 0;
+	};
+	var dateSort2 = function (a,b) {
+		var pad ='00';
+		var arr = a.values['maturityStartDate'].split("/");
+		var aNum = Number(arr[2]+(pad+arr[1]).slice(-pad.length)+(pad+arr[0]).slice(-pad.length));
+		arr = b.values['maturityStartDate'].split("/");
+		var bNum = Number(arr[2]+(pad+arr[1]).slice(-pad.length)+(pad+arr[0]).slice(-pad.length));
+			if(aNum>bNum)
+				return -1;
+			else if(aNum<bNum)
+				return 1;
+			else
+				return 0;
+	};
+	var metadata = []; 
+	metadata.push({ name: "status", label: "Status", datatype: "string",headerStyle:{"width":"15%","cursor":"pointer"},renderFunction:function(rowdata,celldata){ return $('<span>').text('.'+celldata.substring(celldata.indexOf(' '),celldata.length)).attr('title',celldata);},filterable:true});
+	metadata.push({ name: "creditNo", label:"Credit Number", datatype: "string",headerStyle:{"width":"8%","cursor":"pointer"},filterable:true});
+	metadata.push({ name: "creditType", label:"Credit Type", datatype: "string",headerStyle:{"width":"5%","cursor":"pointer"}});
+	metadata.push({ name: "creditCode", label: "Credit Code", datatype: "string",headerStyle:{"width":"8%","cursor":"pointer"}});
+	metadata.push({ name: "currencyCode", label: "Currency Code", datatype: "string",headerStyle:{"width":"5%","cursor":"pointer"}});
+	metadata.push({ name: "limit", label: "Limit", datatype: "string",headerStyle:{"cursor":"pointer"},dataStyle:{"text-align":"right"},renderFunction:function(rowdata,celldata){ return MyUtil.formatNumber(celldata);}});
+	metadata.push({ name: "openingDate", label: "Opening Date", datatype: "string",headerStyle:{"width":"8%","cursor":"pointer"},customSortFunction:dateSort1});
+	metadata.push({ name: "maturityStartDate", label: "Maturity Start Date", datatype: "string",headerStyle:{"width":"8%","cursor":"pointer"},customSortFunction:dateSort2});
+	metadata.push({ name: "totalInterestRate", label: "Interest Rate", datatype: "string",headerStyle:{"width":"5%","cursor":"pointer"},dataStyle:{"text-align":"right"}});
+	metadata.push({ name: "balance", label: "Balance", datatype: "string",headerStyle:{"cursor":"pointer"},dataStyle:{"text-align":"right"},renderFunction:function(rowdata,celldata){ return MyUtil.formatNumber(celldata);}});
+	metadata.push({ name: "link", label: "", datatype: "img",headerStyle:{"width":"8%"},sortable:"false"/*,renderFunction:imageFunction*/});
+	
+	
+	function rowDblClicked(event) {
+		MyUtil.log(event.data);
+	}
+	
+	function rowClicked(event) {
+		alert(event.data.values.creditNo);
+	}
+	
+	var rowSettings = {evenRowStyle:{"background":"#d8e6f0"},oddRowStyle:{"background":"#fcfcfc"},hoverStyle:{"background-color":"#99CCFF"},rowFunctions:[{eventType:"dblclick",functionToCall:rowDblClicked},{eventType:"click",functionToCall:rowClicked}]};
+	
+
+	var data = [{"status":"Opened But Not Used","creditNo":"55030","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":20000000,"openingDate":"27/02/2014","maturityStartDate":"28/02/2014","totalInterestRate":0,"balance":15000000,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55055","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"14/03/2014","maturityStartDate":"14/03/2014","totalInterestRate":0,"balance":1000,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55063","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":3000,"openingDate":"14/03/2014","maturityStartDate":"14/03/2014","totalInterestRate":0,"balance":857.15,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55097","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"26/03/2014","maturityStartDate":"24/03/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55111","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"26/03/2014","maturityStartDate":"26/03/2014","totalInterestRate":0,"balance":150,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55137","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"05/05/2014","maturityStartDate":"05/05/2014","totalInterestRate":11.3,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55145","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"05/05/2014","maturityStartDate":"05/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55152","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"06/05/2014","maturityStartDate":"06/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55160","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"06/05/2014","maturityStartDate":"06/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55178","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"07/05/2014","maturityStartDate":"07/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55186","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":2000,"openingDate":"08/05/2014","maturityStartDate":"27/02/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55194","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"08/05/2014","maturityStartDate":"08/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56289","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":2000,"openingDate":"09/05/2014","maturityStartDate":"27/02/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56297","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"09/05/2014","maturityStartDate":"09/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56303","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"15/05/2014","maturityStartDate":"15/05/2014","totalInterestRate":11.54,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56311","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"16/05/2014","maturityStartDate":"16/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56329","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"20/05/2014","maturityStartDate":"20/05/2014","totalInterestRate":20,"balance":100,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56337","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"20/05/2014","maturityStartDate":"20/05/2014","totalInterestRate":20,"balance":250,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56345","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"21/05/2014","maturityStartDate":"21/05/2014","totalInterestRate":11.52,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56360","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"05/06/2014","maturityStartDate":"05/06/2014","totalInterestRate":20,"balance":10,"branchCode":"DNZL"}];
+	
+	var rowData = [];
+		for(var i = 0;i< data.length;i++) {
+			var inp = data[i];
+			var temp = {id: i,values: {"status":inp.status,"creditNo":inp.creditNo,
+			"creditType":inp.creditType, "creditCode":inp.creditCode,
+			"currencyCode":inp.currencyCode,"limit":inp.limit,
+			"openingDate":inp.openingDate,"maturityStartDate":inp.maturityStartDate,
+			"totalInterestRate":inp.totalInterestRate,"balance":inp.balance,"link":"","branchCode":inp.branchCode}};
+			rowData.push(temp);
+		}
+	
+	var pageSize = 6;
+
+	tablo = new CoolTable('rcGrid',metadata,rowData,'crmgrid',pageSize,rowSettings);
+	
+
+	tablo.drawTable();	
+		
+
+	
+	
+
+    
+			
+
+		         
+
+});
+</script>
+    
+</body> 
+ </html>

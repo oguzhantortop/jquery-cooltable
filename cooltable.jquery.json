@@ -1,0 +1,39 @@
+{
+    "name": "cooltable",
+    "title": "jQuery Cool Table Plugin",
+    "description": "very very cool jQuery plugin for creating tables with sorting, filtering, custom cell rendering, custom css and custom sorting support.",
+    "keywords": [
+        "html",
+        "table",
+		"grid",
+		"sorting",
+		"cellrendering",
+		"customsorting",
+		"JSON"
+    ],
+    "version": "1.0.83",
+    "author": {
+        "name": "Oguzhan TORTOP",
+        "url": "https://github.com/oguzhantortop/cooltable/AUTHORS.txt"
+    },
+    "maintainers": [
+        {
+            "name": "Oguzhan TORTOP",
+            "email": "oguzhantt@yahoo.com",
+            "url": "http://oguzhant.blogspot.com"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "GPLv2",
+            "url": "http://www.gnu.org/licenses/gpl-2.0.html"
+        }
+    ],
+    "bugs": "https://github.com/oguzhantortop/cooltable/issues",
+    "homepage": "https://github.com/oguzhantortop/cooltable",
+    "docs": "https://github.com/oguzhantortop/cooltable/issues",
+    "download": "",
+    "dependencies": {
+        "jquery": ">=1.6.2"
+    }
+}
