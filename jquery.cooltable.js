@@ -11,6 +11,7 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 	this.rowsettings = rowsettings;
 	this.filterEnabled = false;
 	this.filtered = false;
+	this.tableclassname =tableclassname;
 	
 	this.drawTable= function () {
 		this.table = $('<table></table>').attr('class',tableclassname);
@@ -157,7 +158,7 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 				last = $('<span></span>').click(function() {tableInstance.changePage(tableInstance.pageIndex+1)}).text('   >>').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-left: 2em;"});
 			else
 				last = $('<span></span>').append('   ').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-left: 2em;width:3px"});
-			this.table.append($('<tr></tr>').append($('<td></td>').attr('colspan',this.metadata.length).append(first).append((this.pageIndex+1)+'/'+this.pageCount).append(last)).attr('class','crmgridPaginator'));
+			this.table.append($('<tr></tr>').append($('<td></td>').attr('colspan',this.metadata.length).append(first).append((this.pageIndex+1)+'/'+this.pageCount).append(last)).attr('class',this.tableclassname+'Paginator'));
 		}
 	}
 	

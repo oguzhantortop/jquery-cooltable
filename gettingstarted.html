@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<script src="./jquery.cooltable.js"></script>
+		<script src="./jquery-1.6.2.min.js"></script>
+		<style>
+		table.coolgrid { border-collapse: collapse; border: 1px solid #6287a5; width: 540px;}
+		table.coolgrid td, table.coolgrid th { padding: 2px; border: 1px solid #6287a5; font-size: 9px;}
+		table.coolgrid th { background: #E5E5E5;  font-size: 10px;}
+		tr.coolgridPaginator td{background: #ffffff; text-align: center; font-size: 10px;}
+		</style>
+	</head>
+	<body>
+		<div id="rcGrid" ></div>
+		<script>
+			var metadata = []; 
+			metadata.push({ name: "status", label: "Status"});
+			metadata.push({ name: "creditNo", label:"Credit Number"});
+			metadata.push({ name: "creditType", label:"Credit Type"});
+			metadata.push({ name: "creditCode", label: "Credit Code"});
+			
+			var data = [];
+			data.push({id: 0,values: {"status":"Opened","creditNo":"10A3423","creditType":"RC", "creditCode":"A"}});
+			data.push({id: 1,values: {"status":"Closed","creditNo":"10A3422","creditType":"RC", "creditCode":"A"}});
+			data.push({id: 2,values: {"status":"Opened But Not Used","creditNo":"10A3429","creditType":"RC", "creditCode":"A"}});
+			data.push({id: 3,values: {"status":"Opened","creditNo":"10A3444","creditType":"RC", "creditCode":"A"}});
+			
+			function rowDblClicked(event) {
+			        alert('dbl click occurred event data:'+event.data.values.creditNo);
+			    }
+
+			    function rowClicked(event) {
+			        alert('click occurred event data:'+event.data.id);
+			    }
+
+			    var rowSettings = {evenRowStyle:{"background":"#d8e6f0"},oddRowStyle:{"background":"#fcfcfc"},
+			        hoverStyle:{"background-color":"#99CCFF"},rowFunctions:
+			        [{eventType:"dblclick",functionToCall:rowDblClicked},{eventType:"click",functionToCall:rowClicked}]};
+				 var pageSize = 6;
+				    tablo = new CoolTable('rcGrid',metadata,data,'coolgrid',pageSize,rowSettings);
+				    tablo.drawTable();
+		</script>
+	</body>
+</html>
