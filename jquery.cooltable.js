@@ -1,4 +1,5 @@
 function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettings) {
+
 	this.placeholder = placeholder;
 	this.metadata = metadata;
 	this.data = data;
@@ -28,39 +29,41 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 		var tableInstance = this;
 		for(var headerIndex=0; headerIndex<this.metadata.length;headerIndex++) {
 			var sortIndex = headerIndex.toString();
-			hRow.append($('<th></th>')
-				.click(function() {
-					if($(this).attr('sortable') =='true') {
-						if($(this).attr('sortDirection') =='none') {
-							$(this).attr('sortDirection','down');
-							tableInstance.table.find("th").not(':eq('+$(this).attr('sortId')+')').each(function(){$(this).text($(this).attr('title'));$(this).attr('sortDirection','none');});
-							tableInstance.sort($(this).attr('sortId'),'down');
-							$(this).append('&#x25BC;');
-						} else  {
-							if($(this).attr('sortDirection') =='down') {
-								$(this).attr('sortDirection','up');
-								tableInstance.table.find("th").not(':eq('+$(this).attr('sortId')+')').each(function(){$(this).text($(this).attr('title'));$(this).attr('sortDirection','none');});
-								tableInstance.sort($(this).attr('sortId'),'up');
-								$(this).text($(this).attr('title')).append('&#x25B2;');
+			hRow.append($('<th></th>').append($('<div></div>').css({'text-align':'center','width':'100%','display':'table-row'}) /*this.metadata[headerIndex].headerStyle.width*/
+			.append($('<div></div>').append('').css({'display':'table-cell','height':'15px','cursor':'pointer','vertical-align':'middle','min-width':'100%','text-align':'center'}).append(this.metadata[headerIndex].label)
+			.click(function() {
+				if($(this).attr('sortable') =='true') {
+					if($(this).attr('sortDirection') =='none') {
+						$(this).attr('sortDirection','down');
+						tableInstance.table.find("th").not(':eq('+$(this).attr('sortId')+')').each(function(){$($(this).find('div div')[1]).text('');$($(this).find('div div')[0]).attr('sortDirection','none');});
+						tableInstance.sort($(this).attr('sortId'),'down');
+						$($(this).parent().children()[1]).append('&#x25BC;');
+					} else  {
+						if($(this).attr('sortDirection') =='down') {
+							$(this).attr('sortDirection','up');
+							tableInstance.table.find("th").not(':eq('+$(this).attr('sortId')+')').each(function(){$($(this).find('div div')[1]).text('');$($(this).find('div div')[0]).attr('sortDirection','none');});
+							tableInstance.sort($(this).attr('sortId'),'up');
+							$($(this).parent().children()[1]).text('').append('&#x25B2;');
+						} else {
+							$(this).attr('sortDirection','none');
+							tableInstance.table.find("th").each(function(){$($(this).find('div div')[1]).text('');$($(this).find('div div')[0]).attr('sortDirection','none');});
+							tableInstance.data = JSON.parse(JSON.stringify(tableInstance.originalData));
+							if(tableInstance.filtered) {
+								tableInstance.filter(tableInstance);
 							} else {
-								$(this).attr('sortDirection','none');
-								tableInstance.table.find("th").each(function(){$(this).text($(this).attr('title'));$(this).attr('sortDirection','none');});
-								tableInstance.data = JSON.parse(JSON.stringify(tableInstance.originalData));
-								if(tableInstance.filtered) {
-									tableInstance.filter(tableInstance);
-								} else {
-									if(tableInstance.filterEnabled) 	tableInstance.table.find("tr:gt(1)").remove(); else	tableInstance.table.find("tr:gt(0)").remove();
-									tableInstance.fillData();
-								}
+								if(tableInstance.filterEnabled) 	tableInstance.table.find("tr:gt(1)").remove(); else	tableInstance.table.find("tr:gt(0)").remove();
+								tableInstance.fillData();
 							}
 						}
 					}
-				}).
-				attr('sortId',sortIndex).
-				attr('sortDirection','none').
-				attr('sortable',(this.metadata[headerIndex].sortable!=null)?this.metadata[headerIndex].sortable:'true').
-				attr('title',this.metadata[headerIndex].label).text(this.metadata[headerIndex].label).
-				css(this.metadata[headerIndex].headerStyle!=null?this.metadata[headerIndex].headerStyle:{}));
+				}
+			}).
+			attr('sortId',sortIndex).
+			attr('sortDirection','none').
+			attr('title',this.metadata[headerIndex].label).
+			attr('sortable',(this.metadata[headerIndex].sortable!=null)?this.metadata[headerIndex].sortable:'true')
+						).append($('<div></div>').append('').css({'display':'table-cell','min-width':'13px','height':'15px','min-height':'15px','vertical-align':'middle'})))
+			.css(this.metadata[headerIndex].headerStyle!=null?this.metadata[headerIndex].headerStyle:{}));
 		}
 		this.table.append(hRow);
 		
@@ -68,7 +71,7 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 		
 		for(var filterIndex=0; filterIndex<this.metadata.length;filterIndex++) {			
 			fRow.append($('<td></td>')
-				.append((this.metadata[filterIndex].filterable!=null)?$('<input type="text"></input>').css({'width':'100%','height':'16px'}).bind('keyup input paste',this,this.applyFilter).attr('filterKey',this.metadata[filterIndex].name):''));
+				.append((this.metadata[filterIndex].filterable!=null)?$('<input type="text">').css({'box-sizing':($.browser.msie)?'border-box':'','width':'100%','height':'auto'}).bind('keyup input paste',this,this.applyFilter).attr('filterKey',this.metadata[filterIndex].name):''));
 		}
 		if($(fRow).find(':input').length > 0) {
 			this.filterEnabled = true;
@@ -146,19 +149,19 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 		
 		
 		
-		if(this.paginated == true) {
+		if(this.paginated == true && this.pageCount!=0) {
 			var tableInstance = this;
 			var first = null;
 			if(this.pageIndex !=0)
-				first = $('<span></span>').click(function() {tableInstance.changePage(tableInstance.pageIndex-1)}).text('<<   ').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-right: 2em;"});
+				first = $('<span></span>').click(function() {tableInstance.changePage(tableInstance.pageIndex-1)}).text('<<   ').css({"font-weight":'bold',"cursor":"pointer","min-width":"15px"});
 			else
-				first = $('<span></span>').text('   ').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-right: 2em;"});
+				first = $('<span></span>').text('<<  ').css({"font-weight":'bold',"min-width":"15px","visibility":"hidden"});
 			var last = null;
 			if(this.pageIndex !=this.pageCount-1)
-				last = $('<span></span>').click(function() {tableInstance.changePage(tableInstance.pageIndex+1)}).text('   >>').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-left: 2em;"});
+				last = $('<span></span>').click(function() {tableInstance.changePage(tableInstance.pageIndex+1)}).text('   >>').css({"font-weight":'bold',"cursor":"pointer","min-width":"15px"});
 			else
-				last = $('<span></span>').append('   ').css({"font-weight":900,"cursor":"pointer","fontSize":"14px;padding-left: 2em;width:3px"});
-			this.table.append($('<tr></tr>').append($('<td></td>').attr('colspan',this.metadata.length).append(first).append((this.pageIndex+1)+'/'+this.pageCount).append(last)).attr('class',this.tableclassname+'Paginator'));
+				last = $('<span></span>').append('  >>').css({"font-weight":'bold',"min-width":"15px","visibility":"hidden"});
+			this.table.append($('<tr></tr>').append($('<td></td>').attr('colspan',this.metadata.length).append(first).append($('<span>').css({"font-weight":'bold',"min-width":"40px"}).append((this.pageIndex+1)+'/'+this.pageCount)).append(last)).attr('class',this.tableclassname+'Paginator'));
 		}
 	}
 	
@@ -224,8 +227,16 @@ function CoolTable(placeholder, metadata, data,tableclassname,pagesize,rowsettin
 				if(tableInstance.pagesize!= null) {
 						tableInstance.pageCount =  Math.ceil(tableInstance.data.length/tableInstance.pagesize);
 				}
-				tableInstance.fillData();	
+				
+				var tableSorted = false;
+				
+				
+				tableInstance.table.find("th div div[sortDirection]").each(function(){if($(this).attr('sortDirection')!='none'){tableSorted = true; tableInstance.sort($(this).attr('sortId'),$(this).attr('sortDirection'))}});
+				
+				if(!tableSorted)
+					tableInstance.fillData();	
 	}
-
 	
-}   
+
+
+}
