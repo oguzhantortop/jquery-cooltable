@@ -21,6 +21,10 @@
 <body>
     <div id="rcGrid" ></div>
 	<div id="rcPaginator"></div>
+	<br>
+	<input type="button" value="add single row" onclick="addRow()"/>
+	<input type="button" value="add multiple rows" onclick="addRows()"/>
+	<input type="button" value="remove last row" onclick="removeRow()"/>
     
     
 <script>
@@ -70,6 +74,7 @@
 }
 	 
 var tablo ;	
+var rowId;
 	 
 $(document).ready(function () {
 
@@ -166,7 +171,7 @@ $(document).ready(function () {
 	
 
 	tablo.drawTable();	
-		
+	rowId = data.length;
 
 	
 	
@@ -177,6 +182,38 @@ $(document).ready(function () {
 		         
 
 });
+
+function addRow(){
+	var temp = {id: rowId,values: {"status":"Opened But Not Used","creditNo":"56360","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"05/06/2014","maturityStartDate":"05/06/2014","totalInterestRate":20,"balance":10,"branchCode":"DNZL"}};
+	tablo.appendRow(temp);
+	rowId++;
+}
+
+function addRows(){
+	var data = [{"status":"Opened But Not Used","creditNo":"55030","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":20000000,"openingDate":"27/02/2014","maturityStartDate":"28/02/2014","totalInterestRate":0,"balance":15000000,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55055","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"14/03/2014","maturityStartDate":"14/03/2014","totalInterestRate":0,"balance":1000,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55063","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":3000,"openingDate":"14/03/2014","maturityStartDate":"14/03/2014","totalInterestRate":0,"balance":857.15,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55097","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"26/03/2014","maturityStartDate":"24/03/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55111","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"26/03/2014","maturityStartDate":"26/03/2014","totalInterestRate":0,"balance":150,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55137","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"05/05/2014","maturityStartDate":"05/05/2014","totalInterestRate":11.3,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55145","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"05/05/2014","maturityStartDate":"05/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55152","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"06/05/2014","maturityStartDate":"06/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55160","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"06/05/2014","maturityStartDate":"06/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55178","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"07/05/2014","maturityStartDate":"07/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55186","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":2000,"openingDate":"08/05/2014","maturityStartDate":"27/02/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"55194","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"08/05/2014","maturityStartDate":"08/05/2014","totalInterestRate":11.4,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56289","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":2000,"openingDate":"09/05/2014","maturityStartDate":"27/02/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56297","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"09/05/2014","maturityStartDate":"09/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56303","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"15/05/2014","maturityStartDate":"15/05/2014","totalInterestRate":11.54,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56311","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"16/05/2014","maturityStartDate":"16/05/2014","totalInterestRate":0,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56329","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"20/05/2014","maturityStartDate":"20/05/2014","totalInterestRate":20,"balance":100,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56337","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":1000,"openingDate":"20/05/2014","maturityStartDate":"20/05/2014","totalInterestRate":20,"balance":250,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56345","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"21/05/2014","maturityStartDate":"21/05/2014","totalInterestRate":11.52,"balance":0,"branchCode":"DNZL"},{"status":"Opened But Not Used","creditNo":"56360","creditType":"RC","creditCode":"AAAAAA","currencyCode":"TRY","limit":100,"openingDate":"05/06/2014","maturityStartDate":"05/06/2014","totalInterestRate":20,"balance":10,"branchCode":"DNZL"}];
+	
+	var rowData = [];
+		for(var i = 0;i< data.length;i++) {
+			var inp = data[i];
+			var temp = {id: rowId,values: {"status":inp.status,"creditNo":inp.creditNo,
+			"creditType":inp.creditType, "creditCode":inp.creditCode,
+			"currencyCode":inp.currencyCode,"limit":inp.limit,
+			"openingDate":inp.openingDate,"maturityStartDate":inp.maturityStartDate,
+			"totalInterestRate":inp.totalInterestRate,"balance":inp.balance,"link":"","branchCode":inp.branchCode}};
+			rowData.push(temp);
+			rowId++;
+		}
+	tablo.appendRow(rowData);
+	
+}
+
+function removeRow(){
+	if(rowId >= 0) {
+		
+		rowId--;
+		tablo.removeRow(rowId);
+	}
+}
 </script>
     
 </body> 
